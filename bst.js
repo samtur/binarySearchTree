@@ -31,6 +31,27 @@ function buildTree(arr, start, end) {
   return node;
 }
 
+// Function for inserting in tree
+
+function insert(data, root) {
+  root = insertRec(root, data);
+}
+
+function insertRec(root, data) {
+  if (root === null) {
+    root = new Node(data);
+    return root;
+  }
+
+  if (data < root.data) {
+    root.left = insertRec(root.left, data);
+  } else if (data > root.data) {
+    root.right = insertRec(root.right, data);
+  }
+
+  return root;
+}
+
 // Function for printing tree
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node.right !== null) {
@@ -53,15 +74,32 @@ function mergeSort(arr) {
   return merge(leftSorted, rightSorted);
 }
 
-// Function for removing duplicates in array finish this
-function removeDupicate(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    console.log(arr[i]);
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
   }
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-let array = [1, 2, 3, 4, 5, 6, 7];
+// Function for removing duplicates in array
+function removeDupicate(arr) {
+  return arr.filter((value, index) => arr.indexOf(value) === index);
+}
+
+let array = [1, 1, 2, 2, 3, 6, 5, 6, 7, 7];
+array = mergeSort(array);
+array = removeDupicate(array);
 let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
-
+insert(4, myBinaryTree.root);
 prettyPrint(myBinaryTree.root);
