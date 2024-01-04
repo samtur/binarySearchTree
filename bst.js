@@ -52,6 +52,53 @@ function insertRec(root, data) {
   return root;
 }
 
+// Function inorder traversal
+
+function inOrder(root) {
+  if (root !== null) {
+    inOrder(root.left);
+    console.log(root.data);
+    inOrder(root.right);
+  }
+}
+
+// Function for deleting a node
+function deleteNode(root, key) {
+  if (root === null) {
+    return root;
+  }
+
+  // Traverse to find the node to be deleted
+  if (key < root.data) {
+    root.left = deleteNode(root.left, key);
+  } else if (key > root.data) {
+    root.right = deleteNode(root.right, key);
+  } else {
+    // Node with only one child or no child
+    if (root.left === null) {
+      return root.right;
+    } else if (root.right === null) {
+      return root.left;
+    }
+
+    // Node with two children - find the in-order successor
+    root.data = minValue(root.right);
+    // Delete the in-order successor
+    root.right = deleteNode(root.right, root.data);
+  }
+  return root;
+}
+
+// Helper function to find in-order successor to delete a node that has two children
+function minValue(node) {
+  let minValue = node.data;
+  while (node.left !== null) {
+    minValue = node.left.data;
+    node = node.left;
+  }
+  return minValue;
+}
+
 // Function for printing tree
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node.right !== null) {
@@ -102,4 +149,6 @@ array = removeDupicate(array);
 let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
 insert(4, myBinaryTree.root);
+prettyPrint(myBinaryTree.root);
+deleteNode(myBinaryTree.root, 7);
 prettyPrint(myBinaryTree.root);
