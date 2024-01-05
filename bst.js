@@ -99,6 +99,20 @@ function minValue(node) {
   return minValue;
 }
 
+// Function for finding Node
+function find(root, value) {
+  if (root === null) {
+    return root;
+  }
+  if (root.data === value) {
+    console.log(root);
+    return root;
+  } else {
+    find(root.left, value);
+    find(root.right, value);
+  }
+}
+
 // Function for printing tree
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node.right !== null) {
@@ -150,5 +164,4 @@ let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
 insert(4, myBinaryTree.root);
 prettyPrint(myBinaryTree.root);
-deleteNode(myBinaryTree.root, 7);
-prettyPrint(myBinaryTree.root);
+find(myBinaryTree.root, 7);
