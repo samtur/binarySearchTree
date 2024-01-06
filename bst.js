@@ -21,8 +21,8 @@ function buildTree(arr, start, end) {
     return null;
   }
   //   Get mid element of array and make new node with this element
-  var mid = parseInt((start + end) / 2);
-  var node = new Node(arr[mid]);
+  const mid = Math.floor((start + end) / 2);
+  const node = new Node(arr[mid]);
 
   //   recursively construct left subtree and make it left child of root
   node.left = buildTree(arr, start, mid - 1);
@@ -42,14 +42,26 @@ function insertRec(root, data) {
     root = new Node(data);
     return root;
   }
-
   if (data < root.data) {
     root.left = insertRec(root.left, data);
   } else if (data > root.data) {
     root.right = insertRec(root.right, data);
   }
-
   return root;
+}
+
+// Function level order traversal
+function levelOrder(root, result = [], queue = []) {
+  if (root === null) return;
+  result.push(root.data);
+  queue.push(root.left);
+  queue.push(root.right);
+  while (queue.length) {
+    const firstInQueue = queue[0];
+    queue.shift();
+    levelOrder(firstInQueue, result, queue);
+  }
+  return result;
 }
 
 // Function inorder traversal
@@ -80,7 +92,6 @@ function deleteNode(root, key) {
     } else if (root.right === null) {
       return root.left;
     }
-
     // Node with two children - find the in-order successor
     root.data = minValue(root.right);
     // Delete the in-order successor
@@ -135,7 +146,7 @@ function mergeSort(arr) {
   return merge(leftSorted, rightSorted);
 }
 
-function merge(left, right) {
+const merge = (left, right) => {
   let result = [];
   let i = 0;
   let j = 0;
@@ -150,7 +161,7 @@ function merge(left, right) {
     }
   }
   return result.concat(left.slice(i)).concat(right.slice(j));
-}
+};
 
 // Function for removing duplicates in array
 function removeDupicate(arr) {
@@ -164,4 +175,4 @@ let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
 insert(4, myBinaryTree.root);
 prettyPrint(myBinaryTree.root);
-find(myBinaryTree.root, 7);
+console.log(levelOrder(myBinaryTree.root));
