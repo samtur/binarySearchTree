@@ -50,7 +50,7 @@ function insertRec(root, data) {
   return root;
 }
 
-// Function level order traversal
+// Function breadth first search BFS traversal
 function levelOrder(root, result = [], queue = []) {
   if (root === null) return;
   result.push(root.data);
@@ -64,13 +64,81 @@ function levelOrder(root, result = [], queue = []) {
   return result;
 }
 
-// Function inorder traversal
+// Function depth first search DFS traversal
 
-function inOrder(root) {
+function inOrder(root, result = []) {
   if (root !== null) {
-    inOrder(root.left);
-    console.log(root.data);
-    inOrder(root.right);
+    inOrder(root.left, result);
+    result.push(root.data);
+    inOrder(root.right, result);
+  }
+  return result;
+}
+
+function preOrder(root, result = []) {
+  if (root !== null) {
+    result.push(root.data);
+    preOrder(root.left, result);
+    preOrder(root.right, result);
+  }
+  return result;
+}
+
+function postOrder(root, result = []) {
+  if (root !== null) {
+    postOrder(root.left, result);
+    postOrder(root.right, result);
+    result.push(root.data);
+  }
+  return result;
+}
+
+// Function to find tree height of a node
+// Find the node you are looking for
+// Once found check how many edges until a leaf node along the longest path
+// Return number of edges
+// CORRECT FIND HEIGHT FUNCTION
+function findHeight(root, value) {
+  // Base case if root is null return -1
+  if (root === null) {
+    return -1;
+  }
+
+  // If the root is the value return height of 0
+  if (root.data === value.data) {
+    return 0;
+  }
+
+  const leftHeight = findHeight(root.left, value);
+  const rightHeight = findHeight(root.right, value);
+
+  if (leftHeight !== -1) {
+    return leftHeight + 1;
+  }
+
+  if (rightHeight !== -1) {
+    return rightHeight + 1;
+  }
+
+  return -1;
+}
+
+// Function for finding Node
+function find(root, value) {
+  if (root === null) {
+    return null;
+  }
+  if (root.data === value) {
+    return root;
+  } else {
+    const leftResult = find(root.left, value);
+    const rightResult = find(root.right, value);
+    if (leftResult !== null) {
+      return leftResult;
+    } else if (rightResult !== null) {
+      return rightResult;
+    }
+    return null;
   }
 }
 
@@ -108,20 +176,6 @@ function minValue(node) {
     node = node.left;
   }
   return minValue;
-}
-
-// Function for finding Node
-function find(root, value) {
-  if (root === null) {
-    return root;
-  }
-  if (root.data === value) {
-    console.log(root);
-    return root;
-  } else {
-    find(root.left, value);
-    find(root.right, value);
-  }
 }
 
 // Function for printing tree
@@ -168,11 +222,11 @@ function removeDupicate(arr) {
   return arr.filter((value, index) => arr.indexOf(value) === index);
 }
 
-let array = [1, 1, 2, 2, 3, 6, 5, 6, 7, 7];
+let array = [1, 1, 2, 2, 3, 4, 6, 5, 6, 7, 7, 8, 9, 22];
 array = mergeSort(array);
 array = removeDupicate(array);
 let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
-insert(4, myBinaryTree.root);
 prettyPrint(myBinaryTree.root);
-console.log(levelOrder(myBinaryTree.root));
+let target = find(myBinaryTree.root, 8);
+console.log(findHeight(myBinaryTree.root, target));
