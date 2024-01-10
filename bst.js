@@ -93,43 +93,53 @@ function postOrder(root, result = []) {
   return result;
 }
 
-// Function to find tree height of a node
-// Find the node you are looking for
-// Once found check how many edges until a leaf node along the longest path
-// Return number of edges
-// CORRECT FIND HEIGHT FUNCTION
-function findHeight(root, value) {
+// Function for finding the height of a node
+function height(node) {
+  // Base case if root is null return -1
+  if (node === null) {
+    return -1;
+  }
+  // If the root has no left or right nodes
+  if (node.left === null && node.right === null) {
+    return 0;
+  }
+  // Recursively check through tree
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+  return Math.max(leftHeight, rightHeight) + 1;
+}
+
+// Function for finding the depth of a node
+function depth(root, value) {
   // Base case if root is null return -1
   if (root === null) {
     return -1;
   }
-
   // If the root is the value return height of 0
   if (root.data === value.data) {
     return 0;
   }
-
-  const leftHeight = findHeight(root.left, value);
-  const rightHeight = findHeight(root.right, value);
-
-  if (leftHeight !== -1) {
-    return leftHeight + 1;
+  const leftDepth = depth(root.left, value);
+  const rightDepth = depth(root.right, value);
+  if (leftDepth !== -1) {
+    return leftDepth + 1;
   }
-
-  if (rightHeight !== -1) {
-    return rightHeight + 1;
+  if (rightDepth !== -1) {
+    return rightDepth + 1;
   }
-
   return -1;
 }
 
 // Function for finding Node
 function find(root, value) {
+  // Check if tree is empty
   if (root === null) {
     return null;
   }
+  // Check if roots data matches the value base condition then returns root
   if (root.data === value) {
     return root;
+    // Recursively check left and right subtrees
   } else {
     const leftResult = find(root.left, value);
     const rightResult = find(root.right, value);
@@ -138,6 +148,7 @@ function find(root, value) {
     } else if (rightResult !== null) {
       return rightResult;
     }
+    // If no value matches return null
     return null;
   }
 }
@@ -228,5 +239,4 @@ array = removeDupicate(array);
 let n = array.length;
 let myBinaryTree = new Tree(array, 0, n - 1);
 prettyPrint(myBinaryTree.root);
-let target = find(myBinaryTree.root, 8);
-console.log(findHeight(myBinaryTree.root, target));
+console.log(height(find(myBinaryTree.root, 2)));
