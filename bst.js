@@ -14,6 +14,13 @@ class Tree {
   }
 }
 
+// Class tree with root index
+class TreeWithRootIndex {
+  constructor(arr, rootIndex, start, end) {
+    this.root = buildTreeRootIndex(arr, start, end, rootIndex);
+  }
+}
+
 // Build tree from sorted array function
 function buildTree(arr, start, end) {
   // base case
@@ -28,6 +35,21 @@ function buildTree(arr, start, end) {
   node.left = buildTree(arr, start, mid - 1);
   //   recurivesly construct right subtree and make it right child of root
   node.right = buildTree(arr, mid + 1, end);
+  return node;
+}
+
+// Function for building and unbalanced tree
+function buildTreeRootIndex(arr, start, end, rootIndex) {
+  // base case
+  if (start > end) {
+    return null;
+  }
+
+  const node = new Node(arr[rootIndex]);
+  //   recursively construct left subtree and make it left child of root
+  node.left = buildTreeRootIndex(arr, start, rootIndex - 1, rootIndex - 1);
+  //   recurivesly construct right subtree and make it right child of root
+  node.right = buildTreeRootIndex(arr, rootIndex + 1, end, rootIndex + 1);
   return node;
 }
 
@@ -189,6 +211,45 @@ function minValue(node) {
   return minValue;
 }
 
+// Function for checking if binary tree is balanced
+function isBalanced(root) {
+  // If no tree
+  if (root === null) {
+    return true;
+  }
+  // If only one node
+  if (root.left === null && root.right === null) {
+    return true;
+  }
+  // Calculates height of left and right subtrees by calling height function
+  const leftHeight = height(root.left);
+  const rightHeight = height(root.right);
+  // Check if the heights of both subtrees differ at most by one
+  // Check if the left and right subtrees are balanced
+  if (
+    Math.abs(leftHeight - rightHeight) <= 1 &&
+    isBalanced(root.left) &&
+    isBalanced(root.right)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+// Function for rebalancing a tree
+function rebalance(root, arr = []) {
+  if (root !== null) {
+    rebalance(root.left, arr);
+    arr.push(root.data);
+    rebalance(root.right, arr);
+  }
+  mergeSort(arr);
+  removeDupicate(arr);
+  let n = arr.length;
+  let balancedTree = new Tree(arr, 0, n - 1);
+  return balancedTree;
+}
+
 // Function for printing tree
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node.right !== null) {
@@ -233,10 +294,18 @@ function removeDupicate(arr) {
   return arr.filter((value, index) => arr.indexOf(value) === index);
 }
 
-let array = [1, 1, 2, 2, 3, 4, 6, 5, 6, 7, 7, 8, 9, 22];
+let array = [1, 1, 2, 5, 7, 8, 9, 10, 11, 67];
 array = mergeSort(array);
 array = removeDupicate(array);
 let n = array.length;
+let unbalancedRootIndex = 2;
+let unbalancedTree = new TreeWithRootIndex(
+  array,
+  unbalancedRootIndex,
+  0,
+  array.length - 1
+);
 let myBinaryTree = new Tree(array, 0, n - 1);
-prettyPrint(myBinaryTree.root);
-console.log(height(find(myBinaryTree.root, 2)));
+prettyPrint(unbalancedTree.root);
+let balancedTree = rebalance(unbalancedTree.root);
+prettyPrint(balancedTree.root);
